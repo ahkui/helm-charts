@@ -3,6 +3,17 @@ entries:
   dkron:
   - apiVersion: v2
     appVersion: 3.2.6
+    created: "2023-11-28T16:02:09.423516947Z"
+    description: A Helm chart for dkron
+    digest: aab478238e15d971030fa16201fc799ca28c35e4a0e813be2db6b718a53c61c3
+    icon: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
+    name: dkron
+    type: application
+    urls:
+    - https://github.com/ahkui/helm-charts/releases/download/dkron-1.2.0/dkron-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
+    appVersion: 3.2.6
     created: "2023-11-28T11:24:23.487243121Z"
     description: A Helm chart for dkron
     digest: fbd5802e3382d9b8d6676202731485879d7a3f5119a6143bacec8ea744e9e909
@@ -43,4 +54,4 @@ entries:
     urls:
     - https://github.com/ahkui/helm-charts/releases/download/eck-stack-1.0.0/eck-stack-1.0.0.tgz
     version: 1.0.0
-generated: "2023-11-28T11:24:23.487257899Z"
+generated: "2023-11-28T16:02:09.423530662Z"
