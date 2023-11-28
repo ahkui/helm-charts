@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  eck-stack:
+  - apiVersion: v2
+    created: "2023-11-28T10:48:25.027984021Z"
+    dependencies:
+    - condition: eck-elasticsearch.enabled
+      name: eck-elasticsearch
+      repository: ""
+      version: 1.0.0
+    - condition: eck-kibana.enabled
+      name: eck-kibana
+      repository: ""
+      version: 1.0.0
+    description: Elastic Stack managed by the ECK Operator
+    digest: b61c9bca2b22cd3449ff323af7a18fbd1ce25455774bb4b16282552eb09863d8
+    kubeVersion: '>= 1.21.0-0'
+    name: eck-stack
+    type: application
+    urls:
+    - https://github.com/ahkui/helm-charts/releases/download/eck-stack-1.0.0/eck-stack-1.0.0.tgz
+    version: 1.0.0
+generated: "2023-11-28T10:48:25.02799414Z"
