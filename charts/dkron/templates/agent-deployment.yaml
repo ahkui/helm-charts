@@ -56,6 +56,13 @@ spec:
                 containerPort: 6868
           resources:
             {{- toYaml .Values.agent.resources | nindent 12 }}
+          {{- with .Values.agent.envs }}
+          env:
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "dkron.fullname" . }}-envs

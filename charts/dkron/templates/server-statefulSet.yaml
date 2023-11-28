@@ -63,6 +63,13 @@ spec:
                 command: ["./dkron", "leave"]
           resources:
             {{- toYaml .Values.server.resources | nindent 12 }}
+          {{- with .Values.server.envs }}
+          env:
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "dkron.fullname" . }}-envs
