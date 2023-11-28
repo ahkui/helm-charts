@@ -51,12 +51,12 @@ spec:
             - name: "data"
               mountPath: "/dkron"
           ports:
-            -   name: http
-                containerPort: 8080
-            -   name: serf
-                containerPort: 8946
-            -   name: grpc
-                containerPort: 6868
+            - name: http
+              containerPort: 8080
+            - name: serf
+              containerPort: 8946
+            - name: grpc
+              containerPort: 6868
           lifecycle:
             preStop:
               exec:
@@ -66,6 +66,15 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "dkron.fullname" . }}-envs
+          {{- with .Values.server.startupProbe }}
+          startupProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.server.livenessProbe }}
+          livenessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.server.readinessProbe }}
+          readinessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
       {{- with .Values.server.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
