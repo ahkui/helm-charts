@@ -1,0 +1,24 @@
+{
+    "yaml.validate": true,
+    "yaml.schemaStore.enable": true,
+    "yaml.schemas": {
+        "charts/eck-stack/values.schema.json": [
+            "charts/eck-stack/values.yaml",
+            "eck-stack-values.yaml"
+        ],
+        "charts/eck-stack/charts/eck-elasticsearch/values.schema.json": [
+            "charts/eck-stack/charts/eck-elasticsearch/values.yaml"
+        ],
+        "charts/eck-stack/charts/eck-kibana/values.schema.json": [
+            "charts/eck-stack/charts/eck-kibana/values.yaml"
+        ],
+        "file:///home/ahkui/workspace/helm-charts/charts/eck-stack/charts/eck-elasticsearch/values.schema.json": "file:///home/ahkui/workspace/helm-charts/charts/eck-stack/charts/eck-elasticsearch/values.yaml"
+    },
+    "[json]": {
+        "editor.wordWrap": "off",
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace"
+    },
+}

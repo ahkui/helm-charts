@@ -1,0 +1,14 @@
+apiVersion: v2
+name: eck-stack
+description: Elastic Stack managed by the ECK Operator
+kubeVersion: ">= 1.21.0-0"
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: eck-elasticsearch
+    condition: eck-elasticsearch.enabled
+    version: 1.0.0
+  - name: eck-kibana
+    condition: eck-kibana.enabled
+    version: 1.0.0
