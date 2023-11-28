@@ -1,0 +1,38 @@
+{{- if .Values.service.enabled -}}
+{{- $fullName := include "elasticsearch.fullname" . -}}
+{{- $servicePort := "https" -}}
+{{- if ((((.Values.spec).http).tls).selfSignedCertificate).disabled }}
+{{- $servicePort = "http" -}}
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $fullName }}-es-gateway
+  labels:
+    {{- include "elasticsearch.labels" . | nindent 4 }}
+    {{- with .Values.service.labels }}
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+    {{- end }}
+  annotations:
+    {{- with .Values.service.annotations }}
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 9200
+      targetPort: {{ $servicePort }}
+      protocol: TCP
+      name: {{ $servicePort }}
+  selector:
+    elasticsearch.k8s.elastic.co/cluster-name: {{ $fullName }}
+    {{- with .Values.service.selector }}
+    {{- range $key, $value := . }}
+    {{ $key }}: {{ tpl $value $ | quote }}
+    {{- end }}
+    {{- end }}
+{{- end }}
