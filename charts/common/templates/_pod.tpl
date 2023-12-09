@@ -50,15 +50,21 @@ containers:
     {{- end -}}
 
     {{- with .Values.startupProbe }}
-    startupProbe: {{ include "bettertpl" (dict "value" . "context" $) | nindent 6 }}
+    {{- if or .enabled (eq .enabled nil) }}
+    startupProbe: {{ include "bettertpl" (dict "value" (omit . "enabled") "context" $) | nindent 6 }}
+    {{- end }}
     {{- end -}}
 
     {{- with .Values.livenessProbe }}
-    livenessProbe: {{ include "bettertpl" (dict "value" . "context" $) | nindent 6 }}
+    {{- if or .enabled (eq .enabled nil) }}
+    livenessProbe: {{ include "bettertpl" (dict "value" (omit . "enabled") "context" $) | nindent 6 }}
+    {{- end }}
     {{- end -}}
 
     {{- with .Values.readinessProbe }}
-    readinessProbe: {{ include "bettertpl" (dict "value" . "context" $) | nindent 6 }}
+    {{- if or .enabled (eq .enabled nil) }}
+    readinessProbe: {{ include "bettertpl" (dict "value" (omit . "enabled") "context" $) | nindent 6 }}
+    {{- end }}
     {{- end -}}
 
     {{- with .Values.env }}
