@@ -3,6 +3,16 @@ entries:
   common:
   - apiVersion: v2
     appVersion: latest
+    created: "2023-12-09T20:59:30.277593194Z"
+    description: A Helm chart for Kubernetes
+    digest: 2999ab1bb20a7278497a59a89c5b96648b968d25610d169455fc7375cc8839f5
+    name: common
+    type: application
+    urls:
+    - https://github.com/ahkui/helm-charts/releases/download/common-1.0.1/common-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2023-12-08T19:23:24.155857277Z"
     description: A Helm chart for Kubernetes
     digest: 3db5cb85152b3e7b1f262a1b2cffd920c99955f7a95c394742092d9e593e9b02
@@ -87,4 +97,4 @@ entries:
     urls:
     - https://github.com/ahkui/helm-charts/releases/download/eck-stack-1.0.0/eck-stack-1.0.0.tgz
     version: 1.0.0
-generated: "2023-12-08T19:23:24.155882183Z"
+generated: "2023-12-09T20:59:30.277608813Z"
