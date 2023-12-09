@@ -244,17 +244,17 @@ service:
     http:
       enabled: true
       protocol: TCP
-      appProtocol: http
       servicePort: 80
       containerPort: 80
+      # appProtocol: http
       # nodePort: 30007
       # hostPort: 30008
     https:
       enabled: false
       protocol: TCP
-      appProtocol: tcp
       servicePort: 443
       containerPort: 443
+      # appProtocol: tcp
       # nodePort: 30009
       # hostPort: 30010
 

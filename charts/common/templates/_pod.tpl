@@ -30,7 +30,7 @@ containers:
     {{- with .Values.service.ports }}
     ports:
       {{- range $key, $port := . }}
-      {{- if $port.enabled }}
+      {{- if or $port.enabled (eq $port.enabled nil) }}
       - name: {{ $key }}
         containerPort: {{ $port.containerPort }}
         protocol: {{ $port.protocol }}

@@ -25,7 +25,7 @@ spec:
   {{- with .Values.service.ports }}
   ports:
     {{- range $key, $port := . }}
-    {{- if $port.enabled }}
+    {{- if or $port.enabled (eq $port.enabled nil) }}
     - name: {{ $key }}
       targetPort: {{ $key }}
       port: {{ $port.servicePort }}
