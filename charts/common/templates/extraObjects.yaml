@@ -1,5 +1,5 @@
 {{- range $k, $v := .Values.extraObjects }}
-{{- if $v.enabled -}}
+{{- if $v.enabled }}
 ---
 {{ include "bettertpl" (dict "value" $v.spec "context" $) }}
 {{- end }}
