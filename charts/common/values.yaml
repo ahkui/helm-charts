@@ -232,6 +232,9 @@ serviceAccount:
 service:
   enabled: true
 
+  # annotations:
+  #   networking.gke.io/load-balancer-type: "Internal"
+
   # ClusterIP / NodePort / LoadBalancer / None
   type: ClusterIP
   clusterIP: ""

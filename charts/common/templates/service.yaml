@@ -3,6 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "common.fullname" . }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- include "bettertpl" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
