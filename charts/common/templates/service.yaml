@@ -17,14 +17,40 @@ spec:
   {{- end }}
   {{- end -}}
 
+  {{- if not (eq .Values.service.type "None") }}
+  {{- with .Values.service.internalTrafficPolicy }}
+  internalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end -}}
+
+  {{- if or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort") }}
+  {{- with .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end -}}
+
   {{- if eq .Values.service.type "LoadBalancer" }}
   {{- with .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- with .Values.service.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
   {{- end }}
   {{- with .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges: {{ toYaml . | nindent 4 }}
   {{- end }}
   {{- end -}}
+
+  {{- with .Values.service.sessionAffinity }}
+  sessionAffinity: {{ . }}
+  {{- end }}
+  {{- with .Values.service.sessionAffinityConfig }}
+  sessionAffinityConfig: {{- include "bettertpl" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.service.trafficDistribution }}
+  trafficDistribution: {{ . }}
+  {{- end }}
 
   {{- with .Values.service.ports }}
   ports:

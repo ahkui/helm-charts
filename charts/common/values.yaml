@@ -241,7 +241,19 @@ service:
 
   # type: LoadBalancer
   loadBalancerIP: ""
+  loadBalancerClass: ""
   loadBalancerSourceRanges: []
+
+  internalTrafficPolicy: Cluster
+  externalTrafficPolicy: Cluster
+  
+  # None / ClientIP
+  sessionAffinity: None
+  sessionAffinityConfig: {}
+  #   clientIP:
+  #     timeoutSeconds: 300
+
+  trafficDistribution: ""
 
   ports:
     http:
