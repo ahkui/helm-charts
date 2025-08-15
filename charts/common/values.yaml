@@ -53,17 +53,48 @@ envFrom: []
 #   - secretRef: '{{ include "common.fullname" . }}-config'
 #     optional: false
 
-# List of volumes that can be mounted by containers belonging to the pod.
+# This also supports template content, which will eventually be converted to yaml.
 # https://kubernetes.io/docs/concepts/storage/volumes
-volumeMounts: []
-#   - configMapRef: '{{ include "common.fullname" . }}-fluent-bit'
-#     name: fluent-bit
-#     optional: true
-#   - secretRef: '{{ include "common.fullname" . }}-config'
-#     name: config
-#     mountPath: /etc/config.yml
-#     subPath: config.yml
-#     readOnly: true
+extraVolumes: []
+  # - name: fluent-bit
+  #   configMap:
+  #     name: '{{ include "common.fullname" . }}-fluent-bit'
+  #     optional: true
+  #     items:
+  #       - key: config
+  #         path: fluent.conf
+  # - name: config
+  #   secret:
+  #     secretName: '{{ include "common.fullname" . }}-config'
+  #     optional: true
+  # - name: cache-volume
+  #   emptyDir:
+  #     sizeLimit: 500Mi
+  #     medium: Memory
+  # - name: hostpath
+  #   hostPath:
+  #     path: /
+  #     type: Directory
+  # - name: artifact
+  #   image:
+  #     reference: quay.io/crio/artifact:v2
+  #     pullPolicy: IfNotPresent
+  # - name: nfs
+  #   nfs:
+  #     server: nfs.example.com
+  #     path: /my-nfs
+  #     readOnly: true
+  # - name: pvc
+  #   persistentVolumeClaim:
+  #     claimName: my-pvc
+
+# This also supports template content, which will eventually be converted to yaml.
+# https://kubernetes.io/docs/concepts/storage/volumes
+extraVolumeMounts: []
+  # - mountPath: /var/www/html
+  #   name: nfs
+  #   subPath: html
+  #   readOnly: true
 
 volumeClaimTemplates: []
 #   - metadata:

@@ -90,40 +90,18 @@ containers:
       {{- end }}
     {{- end -}}
 
-    {{- with .Values.volumeMounts }}
+    {{- with .Values.extraVolumeMounts }}
     volumeMounts:
-      {{- range $k, $v := . }}
-      {{- if and $v.mountPath (not $v.sidecarOnly)  }}
-      - name: {{ $v.name | quote }}
-        mountPath: {{ $v.mountPath | quote }}
-        {{- if $v.subPath }}
-        subPath: {{ $v.subPath | quote }}
-        {{- end }}
-        readOnly: {{ $v.readOnly | default false }}
-      {{- end }}
-      {{- end }}
+      {{- include "bettertpl" (dict "value" . "context" $) | nindent 6 }}
     {{- end -}}
 
   {{- with .Values.extraContainers }}
   {{- include "bettertpl" (dict "value" . "context" $) | nindent 2 }}
   {{- end -}}
 
-{{- with .Values.volumeMounts }}
+{{- with .Values.extraVolumes }}
 volumes:
-  {{- range $k, $v := . }}
-  {{- if or $v.configMapRef $v.secretRef }}
-  - name: {{ $v.name | quote }}
-    {{- if $v.secretRef }}
-    secret:
-      secretName: {{ include "bettertpl" (dict "value" $v.secretRef "context" $) }}
-      optional: {{ $v.optional | default false }}
-    {{- else if $v.configMapRef }}
-    configMap:
-      name: {{ include "bettertpl" (dict "value" $v.configMapRef "context" $) }}
-      optional: {{ $v.optional | default false }}
-    {{- end }}
-  {{- end }}
-  {{- end }}
+  {{- include "bettertpl" (dict "value" . "context" $) | nindent 6 }}
 {{- end -}}
 
 {{- with .Values.priorityClassName }}
