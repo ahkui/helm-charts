@@ -18,6 +18,9 @@
             "default": 1,
             "minimum": 0
         },
+        "revisionHistoryLimit": {
+            "type": "integer"
+        },
         "image": {
             "description": "Container image parameters.",
             "type": "object",
