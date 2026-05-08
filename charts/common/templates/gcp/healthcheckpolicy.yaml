@@ -1,0 +1,40 @@
+{{- if .Values.service.enabled }}
+{{- if .Values.gcp }}
+{{- if .Values.gcp.healthCheckPolicy.enabled }}
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: {{ include "common.fullname" . }}
+spec:
+  default:
+    checkIntervalSec: {{ .Values.gcp.healthCheckPolicy.checkIntervalSec }}
+    timeoutSec: {{ .Values.gcp.healthCheckPolicy.timeoutSec }}
+    healthyThreshold: {{ .Values.gcp.healthCheckPolicy.healthyThreshold }}
+    unhealthyThreshold: {{ .Values.gcp.healthCheckPolicy.unhealthyThreshold }}
+    logConfig:
+      enabled: {{ .Values.gcp.healthCheckPolicy.logging.enabled }}
+    config:
+      type: {{ .Values.gcp.healthCheckPolicy.type }}
+      {{- if eq .Values.gcp.healthCheckPolicy.type "TCP" }}
+      tcpHealthCheck:
+        {{- include "bettertpl" (dict "value" .Values.gcp.healthCheckPolicy.tcpHealthCheck "context" $) | nindent 8 }}
+      {{- else if eq .Values.gcp.healthCheckPolicy.type "HTTP" }}
+      httpHealthCheck:
+        {{- include "bettertpl" (dict "value" .Values.gcp.healthCheckPolicy.httpHealthCheck "context" $) | nindent 8 }}
+      {{- else if eq .Values.gcp.healthCheckPolicy.type "HTTPS" }}
+      httpsHealthCheck:
+        {{- include "bettertpl" (dict "value" .Values.gcp.healthCheckPolicy.httpsHealthCheck "context" $) | nindent 8 }}
+      {{- else if eq .Values.gcp.healthCheckPolicy.type "HTTP2" }}
+      http2HealthCheck:
+        {{- include "bettertpl" (dict "value" .Values.gcp.healthCheckPolicy.http2HealthCheck "context" $) | nindent 8 }}
+      {{- else if eq .Values.gcp.healthCheckPolicy.type "GRPC" }}
+      grpcHealthCheck:
+        {{- include "bettertpl" (dict "value" .Values.gcp.healthCheckPolicy.grpcHealthCheck "context" $) | nindent 8 }}
+      {{- end }}
+  targetRef:
+    group: ""
+    kind: Service
+    name: {{ include "common.fullname" . }}
+{{- end }}
+{{- end }}
+{{- end }}

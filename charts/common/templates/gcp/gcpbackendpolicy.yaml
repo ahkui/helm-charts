@@ -1,0 +1,52 @@
+{{- if .Values.service.enabled }}
+{{- if .Values.gcp }}
+{{- if .Values.gcp.gcpBackendPolicy.enabled }}
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: {{ include "common.fullname" . }}
+spec:
+  default:
+    logging:
+      enabled: {{ .Values.gcp.gcpBackendPolicy.logging.enabled }}
+      {{- with .Values.gcp.gcpBackendPolicy.logging.sampleRate }}
+      sampleRate: {{ . }}
+      {{- end }}
+    {{- with .Values.gcp.gcpBackendPolicy.securityPolicy }}
+    securityPolicy: {{ . }}
+    {{- end }}
+    {{- with .Values.gcp.gcpBackendPolicy.sessionAffinity }}
+    {{- if .type }}
+    sessionAffinity:
+      type: {{ .type }}
+      cookieTtlSec: {{ .cookieTtlSec }}
+    {{- end }}
+    {{- end }}
+    {{- with .Values.gcp.gcpBackendPolicy.connectionDraining }}
+    connectionDraining:
+      drainingTimeoutSec: {{ .drainingTimeoutSec }}
+    {{- end }}
+    {{- with .Values.gcp.gcpBackendPolicy.cdn }}
+    {{- if .enabled }}
+    cdn:
+      {{- with .cachePolicy }}
+      cachePolicy: {{ . }}
+      {{- end }}
+      {{- with .signedUrlKeyNames }}
+      signedUrlKeyNames:
+        {{- range . }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- with .Values.gcp.gcpBackendPolicy.timeoutSec }}
+    timeoutSec: {{ . }}
+    {{- end }}
+  targetRef:
+    group: ""
+    kind: Service
+    name: {{ include "common.fullname" . }}
+{{- end }}
+{{- end }}
+{{- end }}

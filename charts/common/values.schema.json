@@ -19,7 +19,8 @@
             "minimum": 0
         },
         "revisionHistoryLimit": {
-            "type": "integer"
+            "type": "integer",
+            "default": 10
         },
         "image": {
             "description": "Container image parameters.",
@@ -335,6 +336,17 @@
                                         "pathType": {
                                             "description": "Path type for the Ingress.",
                                             "type": "string"
+                                        },
+                                        "port": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "type": "string"
+                                                }
+                                            ],
+                                            "description": "Name or number of the port to access on the container."
                                         }
                                     }
                                 }
@@ -357,6 +369,62 @@
                                 "type": "array",
                                 "items": {
                                     "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "httproute": {
+            "description": "HTTPRoute configuration.",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Indicates if HTTPRoute is enabled.",
+                    "type": "boolean"
+                },
+                "annotations": {
+                    "description": "Annotations to add to the HTTPRoute.",
+                    "type": "object"
+                },
+                "parentRefs": {
+                    "description": "ParentRefs configuration for the HTTPRoute.",
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "hostnames": {
+                    "description": "Hostnames for the HTTPRoute.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "rules": {
+                    "description": "Rules for the HTTPRoute.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "port": {
+                                "anyOf": [
+                                    {
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            },
+                            "matches": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1366,9 +1434,10 @@
             "type": "array"
         },
         "terminationGracePeriodSeconds": {
-            "description": "Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.",
+            "description": "Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 24 seconds.",
             "format": "int64",
-            "type": "integer"
+            "type": "integer",
+            "default": 24
         },
         "readinessProbe": {
             "description": "Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
@@ -3754,6 +3823,276 @@
                     "description": "Namespace which Prometheus is running in",
                     "type": "string",
                     "default": ""
+                }
+            }
+        },
+        "gcp": {
+            "description": "GCP specific configuration.",
+            "type": "object",
+            "properties": {
+                "gcpBackendPolicy": {
+                    "description": "GCP Backend Policy configuration.",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "logging": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "sampleRate": {
+                                    "description": "The sample rate for logging. Must be between 0 and 1,000,000.",
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ],
+                                    "minimum": 0,
+                                    "maximum": 1000000
+                                }
+                            }
+                        },
+                        "timeoutSec": {
+                            "description": "Timeout for the backend service in seconds.",
+                            "type": "integer",
+                            "default": 30
+                        },
+                        "securityPolicy": {
+                            "description": "Reference to a GCP Cloud Armor Security Policy.",
+                            "type": "string"
+                        },
+                        "sessionAffinity": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "CLIENT_IP",
+                                        "CLIENT_IP_PORT_PROTO",
+                                        "CLIENT_IP_PROTO",
+                                        "GENERATED_COOKIE",
+                                        "HEADER_FIELD",
+                                        "HTTP_COOKIE",
+                                        "NONE"
+                                    ]
+                                },
+                                "cookieTtlSec": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "connectionDraining": {
+                            "type": "object",
+                            "properties": {
+                                "drainingTimeoutSec": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 3600
+                                }
+                            }
+                        },
+                        "cdn": {
+                            "description": "Cloud CDN configuration.",
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "cachePolicy": {
+                                    "type": "string"
+                                },
+                                "signedUrlKeyNames": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "healthCheckPolicy": {
+                    "description": "GCP Health Check Policy configuration.",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "logging": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "checkIntervalSec": {
+                            "type": "integer",
+                            "default": 5
+                        },
+                        "timeoutSec": {
+                            "type": "integer",
+                            "default": 5
+                        },
+                        "unhealthyThreshold": {
+                            "type": "integer",
+                            "default": 2
+                        },
+                        "healthyThreshold": {
+                            "type": "integer",
+                            "default": 2
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "TCP",
+                                "HTTP",
+                                "HTTPS",
+                                "HTTP2",
+                                "GRPC"
+                            ]
+                        },
+                        "tcpHealthCheck": {
+                            "type": "object",
+                            "properties": {
+                                "portSpecification": {
+                                    "type": "string",
+                                    "enum": [
+                                        "USE_FIXED_PORT",
+                                        "USE_NAMED_PORT",
+                                        "USE_SERVING_PORT"
+                                    ]
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "proxyHeader": {
+                                    "type": "string",
+                                    "enum": [
+                                        "NONE",
+                                        "PROXY_V1"
+                                    ]
+                                }
+                            }
+                        },
+                        "httpHealthCheck": {
+                            "type": "object",
+                            "properties": {
+                                "portSpecification": {
+                                    "type": "string",
+                                    "enum": [
+                                        "USE_FIXED_PORT",
+                                        "USE_NAMED_PORT",
+                                        "USE_SERVING_PORT"
+                                    ]
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "host": {
+                                    "type": "string"
+                                },
+                                "requestPath": {
+                                    "type": "string"
+                                },
+                                "response": {
+                                    "type": "string"
+                                },
+                                "proxyHeader": {
+                                    "type": "string",
+                                    "enum": [
+                                        "NONE",
+                                        "PROXY_V1"
+                                    ]
+                                }
+                            }
+                        },
+                        "httpsHealthCheck": {
+                            "type": "object",
+                            "properties": {
+                                "portSpecification": {
+                                    "type": "string",
+                                    "enum": [
+                                        "USE_FIXED_PORT",
+                                        "USE_NAMED_PORT",
+                                        "USE_SERVING_PORT"
+                                    ]
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "host": {
+                                    "type": "string"
+                                },
+                                "requestPath": {
+                                    "type": "string"
+                                },
+                                "response": {
+                                    "type": "string"
+                                },
+                                "proxyHeader": {
+                                    "type": "string",
+                                    "enum": [
+                                        "NONE",
+                                        "PROXY_V1"
+                                    ]
+                                }
+                            }
+                        },
+                        "http2HealthCheck": {
+                            "type": "object",
+                            "properties": {
+                                "portSpecification": {
+                                    "type": "string",
+                                    "enum": [
+                                        "USE_FIXED_PORT",
+                                        "USE_NAMED_PORT",
+                                        "USE_SERVING_PORT"
+                                    ]
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "host": {
+                                    "type": "string"
+                                },
+                                "requestPath": {
+                                    "type": "string"
+                                },
+                                "response": {
+                                    "type": "string"
+                                },
+                                "proxyHeader": {
+                                    "type": "string",
+                                    "enum": [
+                                        "NONE",
+                                        "PROXY_V1"
+                                    ]
+                                }
+                            }
+                        },
+                        "grpcHealthCheck": {
+                            "type": "object",
+                            "properties": {
+                                "portSpecification": {
+                                    "type": "string",
+                                    "enum": [
+                                        "USE_FIXED_PORT",
+                                        "USE_NAMED_PORT",
+                                        "USE_SERVING_PORT"
+                                    ]
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "grpcServiceName": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
