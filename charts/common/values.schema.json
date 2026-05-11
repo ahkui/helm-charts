@@ -294,6 +294,32 @@
                 "trafficDistribution": {
                     "description": "TrafficDistribution offers a way to express preferences for how traffic is distributed to Service endpoints. Implementations can use this field as a hint, but are not required to guarantee strict adherence. If the field is not set, the implementation will apply its default routing strategy. If set to \"PreferClose\", implementations should prioritize endpoints that are in the same zone.",
                     "type": "string"
+                },
+                "internal": {
+                    "description": "Internal service configuration.",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "annotations": {
+                            "description": "Annotations to add to the internal service.",
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "type": {
+                            "description": "type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer.",
+                            "type": "string",
+                            "enum": [
+                                "ClusterIP",
+                                "NodePort",
+                                "LoadBalancer",
+                                "None"
+                            ]
+                        }
+                    }
                 }
             }
         },
@@ -425,6 +451,62 @@
                                 "type": "array",
                                 "items": {
                                     "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "internal": {
+                    "description": "Internal HTTPRoute configuration.",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "description": "Indicates if the internal HTTPRoute is enabled.",
+                            "type": "boolean"
+                        },
+                        "annotations": {
+                            "description": "Annotations to add to the internal HTTPRoute.",
+                            "type": "object"
+                        },
+                        "parentRefs": {
+                            "description": "ParentRefs configuration for the internal HTTPRoute.",
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "hostnames": {
+                            "description": "Hostnames for the internal HTTPRoute.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "rules": {
+                            "description": "Rules for the internal HTTPRoute.",
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "port": {
+                                        "anyOf": [
+                                            {
+                                                "type": "integer"
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    },
+                                    "matches": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -3910,6 +3992,19 @@
                                     }
                                 }
                             }
+                        },
+                        "internal": {
+                            "description": "Internal GCP Backend Policy configuration.",
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "securityPolicy": {
+                                    "description": "Reference to a GCP Cloud Armor Security Policy for the internal service.",
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 },
@@ -4089,6 +4184,15 @@
                                 },
                                 "grpcServiceName": {
                                     "type": "string"
+                                }
+                            }
+                        },
+                        "internal": {
+                            "description": "Internal GCP Health Check Policy configuration.",
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
                                 }
                             }
                         }

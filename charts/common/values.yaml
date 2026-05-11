@@ -312,6 +312,28 @@ service:
       # nodePort: 30007
       # hostPort: 30008
 
+  internal:
+    enabled: false
+    annotations: {}
+    #   networking.gke.io/load-balancer-type: "Internal"
+    type: ClusterIP
+    clusterIP: ""
+    loadBalancerIP: ""
+    loadBalancerClass: ""
+    loadBalancerSourceRanges: []
+    internalTrafficPolicy: Cluster
+    externalTrafficPolicy: Cluster
+    sessionAffinity: None
+    sessionAffinityConfig: {}
+    trafficDistribution: ""
+    # ports:
+    #   http:
+    #     enabled: true
+    #     protocol: TCP
+    #     servicePort: 80
+    #     containerPort: 80
+    #     appProtocol: HTTP
+
 ingress:
   enabled: false
   className: ""
@@ -359,6 +381,19 @@ httproute:
         - path:
             type: PathPrefix
             value: /
+  internal:
+    enabled: false
+    annotations: {}
+    parentRefs: []
+    hostnames: []
+    rules:
+      - name: root
+        port: http
+        matches:
+          - path:
+              type: PathPrefix
+              value: /
+
 
 # Settings to limit the disruption when pods need to be rescheduled for some reason such as upgrades or routine maintenance.
 podDisruptionBudget:
@@ -431,6 +466,9 @@ gcp:
     #   cachePolicy: "CACHE_ALL_STATIC"
     #   signedUrlKeyNames:
     #     - "my-key"
+    internal:
+      enabled: false
+      securityPolicy: ""
 
   healthCheckPolicy:
     enabled: false
@@ -475,6 +513,8 @@ gcp:
     #   portSpecification: USE_SERVING_PORT
     #   port: 50051
     #   grpcServiceName: "my-service"
+    internal:
+      enabled: false
 
 extraObjects: {}
 #   secretConfig:

@@ -1,21 +1,21 @@
-{{- if .Values.httproute.enabled }}
+{{- if .Values.httproute.internal.enabled }}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ include "common.fullname" . }}
-  {{- with (.Values.httproute.annotations) }}
+  name: {{ include "common.fullname" . }}-internal
+  {{- with (.Values.httproute.internal.annotations) }}
   annotations:
     {{- tpl (. | toYaml) $ | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-    {{- tpl (.Values.httproute.parentRefs | toYaml) $ | nindent 4 }}
+    {{- tpl (.Values.httproute.internal.parentRefs | toYaml) $ | nindent 4 }}
   hostnames:
-    {{- range .Values.httproute.hostnames }}
+    {{- range .Values.httproute.internal.hostnames }}
     - {{ tpl . $ | quote }}
     {{- end }}
   rules:
-    {{- range $rule := .Values.httproute.rules }}
+    {{- range $rule := .Values.httproute.internal.rules }}
     - matches: {{ $rule.matches | toYaml | nindent 8 }}
       {{- with $rule.name }}
       name: {{ tpl . $ | quote }}
@@ -29,13 +29,14 @@ spec:
         {{- tpl (. | toYaml) $ | nindent 8 }}
       {{- end }}
       backendRefs:
-        - name: {{ include "common.fullname" $ }}
+        - name: {{ include "common.fullname" $ }}-internal
+          {{- $ports := default $.Values.service.ports $.Values.service.internal.ports -}}
           {{- if or (kindIs "int" $rule.port) (kindIs "float64" $rule.port) }}
           port: {{ $rule.port }}
           {{- else if kindIs "string" $rule.port }}
-          port: {{ (get $.Values.service.ports $rule.port).servicePort }}
-          {{- else if $.Values.service.ports.http.enabled }}
-          port: {{ $.Values.service.ports.http.servicePort }}
+          port: {{ (get $ports $rule.port).servicePort }}
+          {{- else if $ports.http.enabled }}
+          port: {{ $ports.http.servicePort }}
           {{- else }}
           port: 80
           {{- end }}

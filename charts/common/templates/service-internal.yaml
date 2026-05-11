@@ -1,0 +1,75 @@
+{{- if .Values.service.internal.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.fullname" . }}-internal
+  {{- with .Values.service.internal.annotations }}
+  annotations:
+    {{- include "bettertpl" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.internal.type }}
+  {{- if not (eq .Values.service.internal.type "None") }}
+  {{- with .Values.service.internal.clusterIP }}
+  clusterIP: {{ . }}
+  {{- end }}
+  {{- end -}}
+
+  {{- if not (eq .Values.service.internal.type "None") }}
+  {{- with .Values.service.internal.internalTrafficPolicy }}
+  internalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end -}}
+
+  {{- if or (eq .Values.service.internal.type "LoadBalancer") (eq .Values.service.internal.type "NodePort") }}
+  {{- with .Values.service.internal.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . | quote }}
+  {{- end }}
+  {{- end -}}
+
+  {{- if eq .Values.service.internal.type "LoadBalancer" }}
+  {{- with .Values.service.internal.loadBalancerIP }}
+  loadBalancerIP: {{ . }}
+  {{- end }}
+  {{- with .Values.service.internal.loadBalancerClass }}
+  loadBalancerClass: {{ . }}
+  {{- end }}
+  {{- with .Values.service.internal.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end -}}
+
+  {{- with .Values.service.internal.sessionAffinity }}
+  sessionAffinity: {{ . }}
+  {{- end }}
+  {{- with .Values.service.internal.sessionAffinityConfig }}
+  sessionAffinityConfig: {{- include "bettertpl" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.service.internal.trafficDistribution }}
+  trafficDistribution: {{ . }}
+  {{- end }}
+
+  {{- $ports := default .Values.service.ports .Values.service.internal.ports -}}
+  {{- with $ports }}
+  ports:
+    {{- range $key, $port := . }}
+    {{- if or $port.enabled (eq $port.enabled nil) }}
+    - name: {{ $key }}
+      targetPort: {{ $key }}
+      port: {{ $port.servicePort }}
+      protocol: {{ $port.protocol }}
+      {{- with $port.nodePort }}
+      nodePort: {{ . }}
+      {{- end }}
+      {{- with $port.appProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+  selector:
+    {{- include "common.selectorLabels" . | nindent 4 }}
+{{- end }}
